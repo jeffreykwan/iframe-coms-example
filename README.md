@@ -1,1 +1,5 @@
-# iframe-coms-example
+# react-iframe-coms-example
+
+```
+$ npx http-server
+```

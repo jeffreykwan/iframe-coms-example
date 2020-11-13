@@ -1,0 +1,55 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>iframe</title>
+  <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+  
+  <script type="text/babel">
+    const Child = () => {
+      const [messages, setMessages] = React.useState([]);
+
+      const messageListener = ({ origin, data}) => {
+        setMessages(m => m.concat(data));
+      };
+
+      React.useEffect(() => {
+        window.addEventListener('message', messageListener);
+
+        return () => { 
+          window.removeEventListener('message', messageListener);
+        };
+      }, []);
+
+      return (
+        <>  
+          <button 
+            onClick={() => {
+              parent.postMessage({ message: 'notifying parent' }, '*');
+            }}>
+            Message parent
+          </button>
+          <div>
+            <h3> messages from parent</h3>
+            <pre>{JSON.stringify(messages, null, 2)}</pre>
+          </div>
+        </>
+      );
+    };
+
+    ReactDOM.render(
+      <Child />,
+      document.getElementById('root')
+    );
+  </script>
+</body>
+</html>
